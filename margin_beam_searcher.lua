@@ -6,10 +6,10 @@ do
     self.state_tbl_size = state_tbl_size -- basically num layers
 
     self.resval = cuda and torch.Tensor():cuda() or torch.Tensor()
-    self.resind = cuda and torch.LongTensor():cuda() or torch.LongTensor()
+    self.resind = cuda and torch.LongTensor():cudaLong() or torch.LongTensor()
     self.finalval = cuda and torch.Tensor(1):cuda() or torch.Tensor(1)
-    self.finalind = cuda and torch.LongTensor(1):cuda() or torch.LongTensor(1)
-    self.rembuff = cuda and torch.Tensor():cuda() or torch.LongTensor()
+    self.finalind = cuda and torch.LongTensor(1):cudaLong() or torch.LongTensor(1)
+    self.rembuff = cuda and torch.Tensor():cudaLong() or torch.LongTensor()
     self.prev_state = {}
     for j = 1, state_tbl_size do
       self.prev_state[j] = cuda and torch.Tensor():cuda() or torch.Tensor()
@@ -87,7 +87,7 @@ do
         local nend = n*K
         local scores = all_scores:sub(nstart, nstart+beam_size-1):view(-1) -- scores for this example
         -- take top K
-        torch.topk(resval, resind, scores, K, 1, true)
+        torch.topk(resval, resind:cudaLong(), scores, K, 1, true)
         -- see if we violated margin
         torch.min(finalval, finalind, resval, 1) -- resind[finalind[1]] is idx of K'th highest predicted word
         -- checking that true score at least 1 higher than K'th
@@ -163,7 +163,7 @@ do
       local nend = n*K
       local scores = all_scores:sub(nstart, nstart+beam_size-1):view(-1) -- scores for this example
       -- take top K
-      torch.topk(resval, resind, scores, 1, 1, true)
+      torch.topk(resval, resind:cudaLong(), scores, 1, 1, true)
       -- see if we violated margin
       torch.max(finalval, finalind, resval, 1) -- resind[finalind[1]] should now hold max thing
       local offending_idx
@@ -219,7 +219,7 @@ do
           local nend = n*K
           local scores = all_scores:sub(nstart, nstart+beam_size-1):view(-1) -- scores for this example
           -- take top K
-          torch.topk(resval, resind, scores, K, 1, true)
+          torch.topk(resval, resind:cudaLong(), scores, K, 1, true)
           local pred_inp = batch_pred_inp:sub(nstart, nend)
           -- put predicted next words in pred_inp
           rembuff:add(resind, -1) -- set rembuff = resind - 1
@@ -314,7 +314,7 @@ do
         local nend = n*K
         local scores = all_scores:sub(nstart, nstart+beam_size-1):view(-1) -- scores for this example
         -- take top K
-        torch.topk(resval, resind, scores, K, 1, true)
+        torch.topk(resval, resind:cudaLong(), scores, K, 1, true)
         local pred_inp = batch_pred_inp:sub(nstart, nend)
         -- put predicted next words in pred_inp
         rembuff:add(resind, -1) -- set rembuff = resind - 1

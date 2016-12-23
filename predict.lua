@@ -162,11 +162,11 @@ function main()
     h_init_enc = h_init_enc:cuda()
     context_proto = context_proto:cuda()
     beam_context_proto = beam_context_proto:cuda()
-    pred_pfx_proto = pred_pfx_proto:cuda()
-    inp_proto = inp_proto:cuda()
-    source_proto = source_proto:cuda()
+    pred_pfx_proto = pred_pfx_proto:cudaLong()
+    source_proto = source_proto:cudaLong()
+    inp_proto = inp_proto:cudaLong()
     mask_proto = mask_proto:cuda()
-    disq_idx_proto = disq_idx_proto:cuda()
+    disq_idx_proto = disq_idx_proto:cudaLong()
   end
 
   init_fwd_enc = {}

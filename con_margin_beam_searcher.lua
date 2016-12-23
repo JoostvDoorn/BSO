@@ -6,10 +6,10 @@ do
     self.state_tbl_size = state_tbl_size -- basically num layers
 
     self.resval = cuda and torch.Tensor():cuda() or torch.Tensor()
-    self.resind = cuda and torch.LongTensor():cuda() or torch.LongTensor()
+    self.resind = cuda and torch.LongTensor():cudaLong() or torch.LongTensor()
     self.finalval = cuda and torch.Tensor(1):cuda() or torch.Tensor(1)
-    self.finalind = cuda and torch.LongTensor(1):cuda() or torch.LongTensor(1)
-    self.rembuff = cuda and torch.Tensor():cuda() or torch.LongTensor()
+    self.finalind = cuda and torch.LongTensor(1):cudaLong() or torch.LongTensor(1)
+    self.rembuff = cuda and torch.Tensor():cudaLong() or torch.LongTensor()
     self.prev_state = {}
     for j = 1, state_tbl_size do
       self.prev_state[j] = cuda and torch.Tensor():cuda() or torch.Tensor()
